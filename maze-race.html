@@ -327,27 +327,34 @@ function sfxWinAlert(){beep(600,.09,'sine',.18);beep(800,.11,'sine',.18,.09);bee
 function sfxLoseAlert(){beep(300,.14,'sawtooth',.14);beep(240,.22,'sawtooth',.12,.12);}
 
 // Background music
-const BGM=[261,293,329,349,392,349,329,293,261,261,392,440,392,349,329,293];
-let bgmIdx=0,bgmActive=0,bgmTimer=null;
+// 5 tracks: different keys, moods, tempos — rotate each round
+const BGM_TRACKS=[
+  {n:[261,293,329,349,392,349,329,293,261,261,392,440,392,349,329,293],t:290,w:'triangle'}, // C major march
+  {n:[220,247,261,220,196,220,247,261,329,293,261,247,220,196,175,196],t:355,w:'sawtooth'}, // A minor brooding
+  {n:[349,392,440,523,493,440,392,349,330,349,440,523,587,523,440,392],t:260,w:'triangle'}, // F major bright
+  {n:[196,220,247,261,220,196,175,196,220,261,247,220,196,175,165,175],t:390,w:'sine'},     // G minor tense
+  {n:[523,494,440,392,349,330,294,262,294,330,392,440,494,523,587,659],t:310,w:'triangle'}, // epic descend/ascend
+];
+let bgmTrack=-1,bgmIdx=0,bgmActive=0,bgmTimer=null;
 function bgmTick(){
   if(!actx||!bgmActive)return;
-  beep(BGM[bgmIdx%BGM.length],.22,'triangle',.04,0,.03);
-  if(bgmIdx%4===0)beep(BGM[bgmIdx%BGM.length]/2,.38,'sine',.05,0,.05);
+  const tr=BGM_TRACKS[bgmTrack];
+  beep(tr.n[bgmIdx%tr.n.length],.22,tr.w,.04,0,.03);
+  if(bgmIdx%4===0)beep(tr.n[bgmIdx%tr.n.length]/2,.38,'sine',.05,0,.05);
   if(bgmIdx%8===0)noise(.06,.02);
-  bgmIdx++;bgmTimer=setTimeout(bgmTick,290);
+  bgmIdx++;bgmTimer=setTimeout(bgmTick,tr.t);
 }
-function startBGM(){if(!bgmActive){bgmActive=1;bgmTick();}}
+function startBGM(){stopBGM();bgmActive=1;bgmIdx=0;bgmTick();}
 function stopBGM(){bgmActive=0;clearTimeout(bgmTimer);}
 
 /* ===================== GAME STATE ===================== */
 let maze,exitCell,gameState='countdown',countdown=3;
 let matchWinner=null,matchEndTimer=0,decisions=[null,null];
 let controllerLive=[true,true],wasFrozen=[false,false],seriesBreakTimer=null;
-let shakeT=0,shakeStr=0;
-function addShake(s){shakeStr=s;shakeT=.28;}
 let sendToController=()=>{},rejoinSlot=()=>{};
 
 function startNewMaze(){
+  bgmTrack=(bgmTrack+1)%BGM_TRACKS.length;
   particles=[];
   exitCell={r:Math.floor(MAZE_ROWS/2),c:Math.floor(MAZE_COLS/2)};
   const s1=randCellIn(0,2,0,2),s2=randCellIn(MAZE_ROWS-3,MAZE_ROWS-1,MAZE_COLS-3,MAZE_COLS-1);
@@ -390,7 +397,7 @@ function checkWin(){
   for(let i=0;i<players.length;i++){
     const p=players[i];
     if(Math.hypot(p.x-ex,p.y-ey)<CELL*.35){
-      p.score++;addParticles(ex,ey,'#fbbf24',22);addParticles(p.x,p.y,p.color,16);addShake(5);
+      p.score++;addParticles(ex,ey,'#fbbf24',22);addParticles(p.x,p.y,p.color,16);
       const o=1-i;
       if(p.score>=ROUNDS_TO_WIN){
         matchWinner=p;p.gamesWon++;gameState='matchEnd';matchEndTimer=4;sfxGameWin();stopBGM();
@@ -406,7 +413,7 @@ function checkWin(){
 function syncFrozen(){
   players.forEach((p,i)=>{
     const f=p.frozen>0;
-    if(f&&!wasFrozen[i]){sendToController(i,{type:'prompt',mode:'frozen'});addShake(3);}
+    if(f&&!wasFrozen[i])sendToController(i,{type:'prompt',mode:'frozen'});
     if(!f&&wasFrozen[i])sendToController(i,{type:'prompt',mode:'unfrozen'});
     wasFrozen[i]=f;
   });
@@ -419,7 +426,6 @@ function update(dt){
   } else if(gameState==='playing'){
     movePlayer(players[0],players[1],dt);movePlayer(players[1],players[0],dt);
     updateBullets(dt);updateParticles(dt);syncFrozen();checkWin();
-    if(shakeT>0)shakeT-=dt;
   } else if(gameState==='matchEnd'){
     updateParticles(dt);matchEndTimer-=dt;if(matchEndTimer<=0)enterSeriesBreak();
   }
@@ -468,10 +474,8 @@ function drawHUD(){
 }
 
 function drawMaze(){
-  ctx.fillStyle='#080f1e';ctx.fillRect(0,0,MAZE_W,MAZE_H);
-  // outer glow pass
-  ctx.save();ctx.shadowColor='rgba(99,102,241,.25)';ctx.shadowBlur=6;
-  ctx.strokeStyle='#1e3a5f';ctx.lineWidth=WALL_W+2;ctx.lineCap='round';
+  ctx.fillStyle='#0f172a';ctx.fillRect(0,0,MAZE_W,MAZE_H);
+  ctx.strokeStyle='#64748b';ctx.lineWidth=WALL_W;ctx.lineCap='round';
   ctx.beginPath();
   for(let r=0;r<MAZE_ROWS;r++)for(let c=0;c<MAZE_COLS;c++){
     const w=maze[r][c].walls,x0=c*CELL,y0=r*CELL,x1=x0+CELL,y1=y0+CELL;
@@ -481,9 +485,6 @@ function drawMaze(){
     if(c===MAZE_COLS-1&&w.E){ctx.moveTo(x1,y0);ctx.lineTo(x1,y1);}
   }
   ctx.stroke();
-  // inner crisp pass
-  ctx.shadowBlur=0;ctx.strokeStyle='#3a6fa8';ctx.lineWidth=WALL_W;ctx.stroke();
-  ctx.restore();
 }
 
 function drawExit(){
@@ -557,17 +558,12 @@ function drawOverlay(text,sub){
 
 function render(){
   ctx.clearRect(0,0,MAZE_W,MAZE_H+HUD_H);
-  // screen shake
-  let sx=0,sy=0;
-  if(shakeT>0){const s=shakeStr*(shakeT/.28);sx=(Math.random()-.5)*s*2;sy=(Math.random()-.5)*s*2;}
-  ctx.save();ctx.translate(sx,sy);
   drawHUD();
   ctx.save();ctx.translate(0,HUD_H);
   drawMaze();drawExit();drawBullets();drawParticles();drawPlayers();
   if(gameState==='countdown')drawOverlay(Math.ceil(countdown)>0?String(Math.ceil(countdown)):'GO! 🏁',players[0].name+' vs '+players[1].name);
   else if(gameState==='matchEnd')drawOverlay('🏆 '+matchWinner.name+' wins!');
   else if(gameState==='seriesBreak')drawOverlay('Continue or quit?',shortName(players[0].name)+': '+players[0].gamesWon+' 🏆   '+shortName(players[1].name)+': '+players[1].gamesWon+' 🏆  ·  check your phones');
-  ctx.restore();
   ctx.restore();
 }
 
