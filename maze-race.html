@@ -75,11 +75,64 @@ canvas{display:block}
 #nameInput{width:100%;font-size:18px;padding:14px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:#fff;text-align:center;outline:none}
 #nameInput:focus{border-color:var(--accent,#60a5fa)}
 #btnJoin{width:100%;background:var(--accent,#475569);color:#fff}
+
+/* ---- rotate overlay ---- */
+#rotateOverlay{display:none;position:fixed;inset:0;z-index:200;background:#06091a;flex-direction:column;align-items:center;justify-content:center;gap:24px;text-align:center;padding:24px}
+.rotate-icon{font-size:110px;display:block;animation:rotateAnim 2s ease-in-out infinite;transform-origin:center}
+@keyframes rotateAnim{0%,15%{transform:rotate(0deg)}50%,65%{transform:rotate(-90deg)}85%,100%{transform:rotate(0deg)}}
+.rotate-label{font-size:30px;font-weight:900;color:#e2e8f0;line-height:1.2}
+.rotate-sub{font-size:15px;color:#94a3b8;max-width:260px;line-height:1.5}
+
+/* ---- info screen (shown once on game load) ---- */
+#infoScreen{position:fixed;inset:0;z-index:100;background:rgba(6,9,26,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:32px;cursor:pointer;transition:opacity .5s ease}
+.info-logo{font-size:54px;line-height:1}
+.info-club{font-size:32px;font-weight:900;letter-spacing:.06em;background:linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0}
+.info-line{font-size:15px;color:#94a3b8;max-width:420px;line-height:1.6;margin:0}
+.info-divider{width:60px;height:2px;background:linear-gradient(90deg,#3b82f6,#a78bfa);border-radius:2px}
+.info-ai{font-size:13px;color:#60a5fa;border:1px solid rgba(96,165,250,.3);border-radius:50px;padding:6px 18px;background:rgba(96,165,250,.06)}
+.info-tap{font-size:12px;color:#334155;margin-top:10px;animation:blinkDim 1.4s ease-in-out infinite}
+@keyframes blinkDim{0%,100%{opacity:.4}50%{opacity:1}}
+#infoBar{display:flex;align-items:center;gap:10px}
+
+/* ---- fullscreen button ---- */
+#btnFullscreen{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#64748b;font-size:12px;padding:5px 14px;border-radius:8px;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap}
+#btnFullscreen:hover{background:rgba(255,255,255,.11);color:#94a3b8}
+
+/* ---- queue (next players) section ---- */
+.queue-section{display:flex;flex-direction:column;align-items:center;gap:10px;border-top:1px solid rgba(255,255,255,.06);padding-top:14px;width:100%;max-width:520px}
+.queue-header{font-size:10px;font-weight:800;letter-spacing:.18em;color:#475569}
+.badge-q1{background:rgba(59,130,246,.08);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
+.badge-q2{background:rgba(239,68,68,.08);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+#qrQ1,#qrQ2{transition:max-height .4s ease,opacity .3s ease;max-height:180px;overflow:hidden}
+#qrQ1.collapsed,#qrQ2.collapsed{max-height:0;opacity:0}
+
+/* ---- queued overlay (controller side) ---- */
+#queuedOverlay{position:fixed;inset:0;z-index:25;background:rgba(6,9,26,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;color:#fff;padding:24px;touch-action:none}
+.queued-icon{font-size:62px}
+.queued-title{font-size:26px;font-weight:900}
+.queued-sub{font-size:15px;color:#94a3b8;max-width:260px;line-height:1.5}
+.queued-pulse{width:10px;height:10px;border-radius:50%;background:var(--accent,#60a5fa);animation:dotPulse 1.4s ease-in-out infinite}
 </style>
 </head>
 <body>
+<!-- Info screen: edit club name / tagline here -->
+<div id="infoScreen">
+  <div class="info-logo">🏁</div>
+  <h1 class="info-club">MAZE RACE</h1>
+  <div class="info-divider"></div>
+  <p class="info-line">Scan the QR codes with your phone and use it as a live controller. Race through the maze — freeze your opponent and reach the exit first.</p>
+  <div id="infoBar">
+    <div class="info-ai">✨ Built with Claude AI</div>
+  </div>
+  <p class="info-line" style="font-size:13px;margin-top:4px">Idea & design by <strong style="color:#e2e8f0">[Your Name]</strong> · <strong style="color:#e2e8f0">[Your Club]</strong></p>
+  <p class="info-tap">Tap anywhere to start</p>
+</div>
+
 <div id="gameContainer">
-  <h1 id="gameTitle">🏁 MAZE RACE</h1>
+  <div style="display:flex;align-items:center;gap:10px">
+    <h1 id="gameTitle">🏁 MAZE RACE</h1>
+    <button id="btnFullscreen" title="Toggle fullscreen">⛶ Fullscreen</button>
+  </div>
   <div id="waitingScreen">
     <p class="waiting-label" style="font-size:22px;font-weight:700;">🎮 Scan to join!</p>
     <p class="waiting-label" style="font-size:13px;">Each player scans their own code and uses their phone as a controller.</p>
@@ -97,10 +150,33 @@ canvas{display:block}
         <span class="qr-status" id="statusP2">Waiting…</span>
       </div>
     </div>
-    <p class="waiting-label" style="font-size:11px;opacity:.4;">Game generated with Claude AI</p>
+    <div class="queue-section">
+      <div class="queue-header">⏳ NEXT UP — scan to queue</div>
+      <div class="qr-row">
+        <div class="qr-box" id="qrBoxQ1" style="padding:12px;opacity:.8">
+          <span class="player-badge badge-q1">QUEUE · P1</span>
+          <div id="qrQ1"></div>
+          <span class="qr-label" id="qrLabelQ1" style="font-size:12px">Scan to queue</span>
+          <span class="qr-status" id="statusQ1">Waiting…</span>
+        </div>
+        <div class="qr-box" id="qrBoxQ2" style="padding:12px;opacity:.8">
+          <span class="player-badge badge-q2">QUEUE · P2</span>
+          <div id="qrQ2"></div>
+          <span class="qr-label" id="qrLabelQ2" style="font-size:12px">Scan to queue</span>
+          <span class="qr-status" id="statusQ2">Waiting…</span>
+        </div>
+      </div>
+    </div>
+    <p class="waiting-label" style="font-size:11px;opacity:.35;">Built with Claude AI · [Your Club]</p>
   </div>
   <div id="wrap" style="display:none"><canvas id="game"></canvas></div>
   <p id="controlsText" style="display:none;color:#334155;font-size:11px;margin:0;">Game generated with Claude AI</p>
+</div>
+
+<div id="rotateOverlay">
+  <span class="rotate-icon">📱</span>
+  <div class="rotate-label">Rotate your phone!</div>
+  <div class="rotate-sub">This controller only works in landscape mode</div>
 </div>
 
 <div id="controllerContainer">
@@ -127,6 +203,12 @@ canvas{display:block}
     </div>
     <div class="decision-wait" id="decisionWait">Waiting for the other player…</div>
   </div>
+  <div id="queuedOverlay">
+    <div class="queued-icon">⏳</div>
+    <div class="queued-title">You're in the queue!</div>
+    <div class="queued-sub">Watch the screen — you're up next. Get your thumbs ready 🎮</div>
+    <div class="queued-pulse"></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -134,8 +216,19 @@ canvas{display:block}
 <script>
 /* ===================== CONFIG ===================== */
 const FREEZE_DUR=2, RELOAD_T=1.5, MAZE_COLS=31, MAZE_ROWS=21;
+/* TURN servers fix iOS/Android NAT traversal failures */
+const ICE_CFG={iceServers:[
+  {urls:'stun:stun.l.google.com:19302'},
+  {urls:'stun:stun1.l.google.com:19302'},
+  {urls:'stun:stun2.l.google.com:19302'},
+  {urls:'stun:stun3.l.google.com:19302'},
+  {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},
+  {urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'},
+  {urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'},
+]};
 const PLAYER_SPEED=3, BULLET_SPEED=6, ROUNDS_TO_WIN=2, HUD_H=68;
-const CELL=Math.max(12,Math.min(48,Math.floor(Math.min(
+/* Increased cap to 80 so the maze fills a projector/large display */
+const CELL=Math.max(12,Math.min(80,Math.floor(Math.min(
   (window.innerWidth*.94)/MAZE_COLS,((window.innerHeight-HUD_H)*.78)/MAZE_ROWS))));
 const WALL_W=Math.max(2,Math.round(CELL*.13));
 const PLAYER_R=Math.max(4,Math.round(CELL*.25));
@@ -575,10 +668,33 @@ function loop(t){const dt=Math.min(.05,(t-lastTime)/1000);lastTime=t;pollKeyboar
 function rand4(){return Math.random().toString(36).slice(2,6);}
 
 function initGameMode(){
+  /* ---- Info screen: auto-dismiss after 8s, or tap ---- */
+  const infoEl=document.getElementById('infoScreen');
+  let infoTimer=setTimeout(dismissInfo,8000);
+  function dismissInfo(){
+    clearTimeout(infoTimer);
+    infoEl.style.opacity='0';
+    setTimeout(()=>infoEl.style.display='none',500);
+  }
+  infoEl.addEventListener('click',dismissInfo);
+
+  /* ---- Fullscreen button ---- */
+  document.getElementById('btnFullscreen').addEventListener('click',()=>{
+    if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+    else document.exitFullscreen();
+  });
+  document.addEventListener('fullscreenchange',()=>{
+    document.getElementById('btnFullscreen').textContent=document.fullscreenElement?'⛶ Exit FS':'⛶ Fullscreen';
+  });
+
+  /* ---- Active player state ---- */
   const state={conns:[null,null],ready:[false,false],named:[false,false]};
+  /* ---- Queue state ---- */
+  const qstate={conns:[null,null],named:[false,false],names:['','']};
   let loopStarted=false;
   function baseUrl(){return location.href.split('#')[0];}
 
+  /* ---- Active player QR ---- */
   function renderQR(idx){
     const code=rand4(),num=idx+1;
     const qrEl=document.getElementById('qrP'+num),boxEl=document.getElementById('qrBoxP'+num);
@@ -591,11 +707,19 @@ function initGameMode(){
   }
 
   function connectSlot(idx,code){
-    const peer=new Peer('m'+(idx+1)+code);
+    const peer=new Peer('m'+(idx+1)+code,{config:ICE_CFG});
     peer.on('error',err=>{
       const el=document.getElementById('statusP'+(idx+1));
-      el.textContent='Connection error: '+(err&&err.type?err.type:'network');el.style.color='#ef4444';
+      el.textContent='Error: '+(err&&err.type?err.type:'network');el.style.color='#ef4444';
     });
+    function attachActiveHandlers(conn,i){
+      /* Mutable handler so we can re-use same conn after queue promotion */
+      conn.on('data',data=>{
+        if(data.type==='decision')handleDecision(i,data.choice);
+        else if(data.type==='name')handleName(i,data.name);
+        else window.applyInput(i,data);
+      });
+    }
     peer.on('connection',conn=>{
       conn.on('open',()=>{
         state.conns[idx]=conn;state.ready[idx]=true;controllerLive[idx]=true;
@@ -605,12 +729,76 @@ function initGameMode(){
         checkBothReady();
       });
       conn.on('close',()=>{controllerLive[idx]=false;if(state.conns[idx]===conn)state.conns[idx]=null;});
+      attachActiveHandlers(conn,idx);
+    });
+  }
+
+  /* ---- Queue player QR ---- */
+  function renderQueueQR(qIdx){
+    const code=rand4(),num=qIdx+1;
+    const qrEl=document.getElementById('qrQ'+num),boxEl=document.getElementById('qrBoxQ'+num);
+    qrEl.innerHTML='';qrEl.classList.remove('collapsed');boxEl.classList.remove('connected');
+    document.getElementById('qrLabelQ'+num).textContent='Scan to queue';
+    document.getElementById('statusQ'+num).textContent='Waiting…';
+    qstate.named[qIdx]=false;qstate.names[qIdx]='';
+    new QRCode(qrEl,{text:baseUrl()+'#q-'+code+'-'+num,width:160,height:160,correctLevel:QRCode.CorrectLevel.L});
+    connectQueueSlot(qIdx,code);
+  }
+
+  function connectQueueSlot(qIdx,code){
+    const peer=new Peer('q'+(qIdx+1)+code,{config:ICE_CFG});
+    peer.on('connection',conn=>{
+      conn.on('open',()=>{
+        qstate.conns[qIdx]=conn;
+        document.getElementById('qrBoxQ'+(qIdx+1)).classList.add('connected');
+        document.getElementById('qrQ'+(qIdx+1)).classList.add('collapsed');
+        document.getElementById('statusQ'+(qIdx+1)).textContent='Queued — enter name…';
+        conn.send({type:'prompt',mode:'queued'});
+      });
+      conn.on('close',()=>{
+        if(qstate.conns[qIdx]===conn){qstate.conns[qIdx]=null;qstate.named[qIdx]=false;renderQueueQR(qIdx);}
+      });
       conn.on('data',data=>{
-        if(data.type==='decision')handleDecision(idx,data.choice);
-        else if(data.type==='name')handleName(idx,data.name);
-        else window.applyInput(idx,data);
+        if(data.type==='name'){
+          const clean=(data.name||'').toString().trim().slice(0,16)||('P Q'+(qIdx+1));
+          qstate.names[qIdx]=clean;qstate.named[qIdx]=true;
+          document.getElementById('statusQ'+(qIdx+1)).textContent='⏳ '+clean+' queued!';
+          document.getElementById('qrLabelQ'+(qIdx+1)).textContent=clean;
+        }
       });
     });
+  }
+
+  /* ---- Promote queue → active slot ---- */
+  function tryPromote(activeIdx){
+    const qIdx=activeIdx;
+    const conn=qstate.conns[qIdx];
+    if(!conn||!conn.open)return false;
+    state.conns[activeIdx]=conn;state.ready[activeIdx]=true;
+    players[activeIdx].name=qstate.names[qIdx]||('Player '+(activeIdx+1));
+    state.named[activeIdx]=qstate.named[qIdx];
+    controllerLive[activeIdx]=true;
+    qstate.conns[qIdx]=null;qstate.named[qIdx]=false;qstate.names[qIdx]='';
+    /* Re-route data to active slot */
+    conn.removeAllListeners('data');
+    const i=activeIdx;
+    conn.on('data',data=>{
+      if(data.type==='decision')handleDecision(i,data.choice);
+      else if(data.type==='name')handleName(i,data.name);
+      else window.applyInput(i,data);
+    });
+    conn.on('close',()=>{controllerLive[i]=false;if(state.conns[i]===conn)state.conns[i]=null;});
+    /* Update active slot UI */
+    const num=activeIdx+1;
+    document.getElementById('qrBoxP'+num).classList.add('connected');
+    document.getElementById('qrP'+num).classList.add('collapsed');
+    document.getElementById('statusP'+num).textContent='✓ '+players[activeIdx].name+' is ready!';
+    document.getElementById('qrLabelP'+num).textContent=players[activeIdx].name;
+    /* Notify controller */
+    conn.send({type:'prompt',mode:'promoted'});
+    /* Fill queue slot again */
+    renderQueueQR(qIdx);
+    return true;
   }
 
   function handleName(idx,name){
@@ -637,20 +825,40 @@ function initGameMode(){
     document.getElementById('waitingScreen').style.display='flex';
     document.getElementById('wrap').style.display='none';
     document.getElementById('controlsText').style.display='none';
-    renderQR(idx);
+    /* Try to promote queue player before falling back to new QR */
+    if(tryPromote(idx)){
+      const other=1-idx;
+      if(state.ready[other])sendToController(other,{type:'prompt',mode:'resume'});
+      checkBothReady();
+    } else {
+      renderQR(idx);
+    }
   };
   renderQR(0);renderQR(1);
+  renderQueueQR(0);renderQueueQR(1);
 }
 
-function initControllerMode(peerId,num){
+function initControllerMode(peerId,num,startQueued){
   document.body.classList.add('controller-mode');
   document.getElementById('gameContainer').style.display='none';
+  document.getElementById('infoScreen').style.display='none'; // not for phones
   const cc=document.getElementById('controllerContainer');
   cc.classList.add(String(num)==='1'?'p1-theme':'p2-theme');
   cc.style.display='flex';
 
-  const peer=new Peer('mc'+rand4()+rand4());
-  let conn=null,kicked=false,pendingName=null,myName='';
+  /* ICE config applied to controller peer too */
+  const peer=new Peer('mc'+rand4()+rand4(),{config:ICE_CFG});
+
+  /* Orientation guard — show overlay when portrait */
+  const rotEl=document.getElementById('rotateOverlay');
+  function chkOrient(){const p=window.innerHeight>window.innerWidth;rotEl.style.display=p?'flex':'none';}
+  window.addEventListener('resize',chkOrient);
+  window.addEventListener('orientationchange',()=>setTimeout(chkOrient,150));
+  chkOrient();
+  if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});
+
+  /* myName persists across reconnects — pendingName not needed */
+  let conn=null,kicked=false,myName='';
 
   // Always ask for name — no localStorage
   const nameOverlay=document.getElementById('nameOverlay');
@@ -689,11 +897,12 @@ function initControllerMode(peerId,num){
   btnQ.addEventListener('click',()=>choose('quit'));
 
   function send(data){if(conn&&conn.open)conn.send(data);}
-  function trySendName(){if(pendingName&&conn&&conn.open){send({type:'name',name:pendingName});pendingName=null;}}
+  /* Always re-send myName on open so reconnects restore the name on the host */
+  function trySendName(){if(myName&&conn&&conn.open)send({type:'name',name:myName});}
 
   function submitName(){
     const val=(nameInput.value||'').trim().slice(0,16)||('Player '+num);
-    myName=val;pendingName=val;nameOverlay.style.display='none';
+    myName=val;nameOverlay.style.display='none';
     if(navigator.vibrate)navigator.vibrate([40,30,40]);
     sfxJoin();trySendName();
   }
@@ -726,20 +935,33 @@ function initControllerMode(peerId,num){
       showToast('🏆 You won the game!','t-win');if(navigator.vibrate)navigator.vibrate([50,50,50,50,200]);sfxWinAlert();
     } else if(data.mode==='gameLose'){
       showToast('💀 '+(data.winnerName||'Opponent')+' wins this one!','t-lose');if(navigator.vibrate)navigator.vibrate(250);sfxLoseAlert();
+    } else if(data.mode==='queued'){
+      /* Queue controller: block controls, show waiting overlay */
+      document.getElementById('queuedOverlay').style.display='flex';
+    } else if(data.mode==='promoted'){
+      /* Promoted from queue to active — unblock, buzz */
+      document.getElementById('queuedOverlay').style.display='none';
+      stopDTimer();overlay.style.display='none';
+      if(navigator.vibrate)navigator.vibrate([50,50,200]);
+      showToast('🎮 You\'re up! Good luck!');
     } else {
       stopDTimer();overlay.style.display='none';
     }
   }
 
   function attemptConnect(){
-    if(kicked)return;conn=peer.connect(peerId);
+    if(kicked)return;
+    if(conn){try{conn.close();}catch(e){}}
+    conn=peer.connect(peerId,{reliable:true}); // reliable:true fixes DataChannel drops on iOS
     conn.on('open',()=>{document.getElementById('statusDot').classList.add('connected');trySendName();});
     conn.on('close',()=>{document.getElementById('statusDot').classList.remove('connected');if(!kicked)setTimeout(attemptConnect,1500);});
+    conn.on('error',()=>{document.getElementById('statusDot').classList.remove('connected');if(!kicked)setTimeout(attemptConnect,2000);});
     conn.on('data',handlePrompt);
   }
   peer.on('open',attemptConnect);
-  peer.on('disconnected',()=>{if(!kicked)peer.reconnect();});
-  peer.on('error',()=>document.getElementById('statusDot').classList.remove('connected'));
+  peer.on('disconnected',()=>{if(!kicked&&!peer.destroyed)peer.reconnect();});
+  /* Retry on any peer error (was silently failing before — main iOS/Android bug) */
+  peer.on('error',()=>{document.getElementById('statusDot').classList.remove('connected');if(!kicked)setTimeout(attemptConnect,2000);});
 
   const clamp=v=>Math.max(-1,Math.min(1,v));
   let lastShot=0;
@@ -773,8 +995,16 @@ function initControllerMode(peerId,num){
 
 /* ===================== BOOT ===================== */
 const rawHash=location.hash.slice(1);
-if(rawHash.startsWith('c-')){const parts=rawHash.slice(2).split('-');initControllerMode('m'+parts[1]+parts[0],parts[1]);}
-else initGameMode();
+if(rawHash.startsWith('c-')){
+  const parts=rawHash.slice(2).split('-');
+  initControllerMode('m'+parts[1]+parts[0],parts[1],false);
+} else if(rawHash.startsWith('q-')){
+  /* Queue controller: same init, startQueued=true so it shows queued overlay after name */
+  const parts=rawHash.slice(2).split('-');
+  initControllerMode('q'+parts[1]+parts[0],parts[1],true);
+} else {
+  initGameMode();
+}
 </script>
 </body>
 </html>
