@@ -207,7 +207,7 @@
     <script>
       window.addEventListener("load", () => {
         const t = performance.getEntriesByType("navigation")[0];
-        document.querySelector("body :first-child").innerHTML = `Coming soon <span>${Math.round(performance.now()/100)}ms</span>`;
+        document.querySelector("body :first-child").innerHTML = `Coming soon <span>${Math.round(performance.now()/1000)}s</span>`;
       });
     </script>
   </body>
