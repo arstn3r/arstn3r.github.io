@@ -1,5 +1,65 @@
-<h1 style="color:orange"> Temporary page </h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="reset.css" />
+    <style>
+      body {
+        background: url("./assets/0000000741.jpeg");
+      }
+      h1 {
+        background-color: rgba(0, 0, 0, 0.3);
+        /* padding: 10px; */
+        height: 40px;
+        padding: 0 30px;
+        margin: 0 0 5px 0;
+        color: #dbd9af;
+        font-family: sans-serif;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+      }
+      ul {
+        margin: 10px 30px;
+        color: #2c4249;
+        font-weight: bold;
+      }
+      ul * {
+        margin: 10px;
+      }
+      ul li span {
+        font-weight: bold;
+        color: #2c4249;
+        text-decoration: none;
+      }
 
-<a href="maze-race.html">
-  RaceMase game (made by AI)
-</a>
+      @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+        ul li a,
+        ul {
+          background: linear-gradient(47deg, #2c4249, #2c4249, #e4dfb2, #e4dfb2);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Coming soon.</h1>
+    <ul>
+      Some links for now:
+      <li>
+        <a href="./maze-race.html">
+          <span>❯</span>
+          An A.I. made game
+        </a>
+      </li>
+      <li>
+        <a href="t.me/arstn3r">
+          <span>❯</span>
+          Telegram profile
+        </a>
+      </li>
+    </ul>
+  </body>
+</html>
