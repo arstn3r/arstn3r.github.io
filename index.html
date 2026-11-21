@@ -157,6 +157,9 @@
         display: flex;
         align-items: center;
       }
+      h1 span{
+        margin-left: 85%;
+      }
       ul {
         margin: 10px 30px;
         color: #2c4249;
@@ -185,6 +188,7 @@
   </head>
   <body>
     <h1>Coming soon.</h1>
+
     <ul>
       Some links for now:
       <li>
@@ -200,5 +204,11 @@
         </a>
       </li>
     </ul>
+    <script>
+      window.addEventListener("load", () => {
+        const t = performance.getEntriesByType("navigation")[0];
+        document.querySelector("body :first-child").innerHTML = `Coming soon <span>${t.loadEventEnd}ms</span>`;
+      });
+    </script>
   </body>
 </html>
