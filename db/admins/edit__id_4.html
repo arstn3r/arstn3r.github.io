@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Edit Admin</h2>
+
+
+<div class="form-box">
+    <form method="POST">
+        <label>admin_id</label>
+        <input type="number" name="admin_id" value="4" readonly>
+
+        <label>username</label>
+        <input type="text" name="username" value="admin_diana" required>
+
+        <label>password_hash</label>
+        <input type="text" name="password_hash" value="hash_abc" required>
+
+        <br><br>
+        <button type="submit" class="btn btn-warning">Save</button>
+        <a href="../admins/list.html" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<div class="sql-box"><h3>SQL used</h3><pre>UPDATE admins SET username=?, password_hash=? WHERE admin_id=?</pre><pre>SELECT admin_id, username, password_hash FROM admins WHERE admin_id=?</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>

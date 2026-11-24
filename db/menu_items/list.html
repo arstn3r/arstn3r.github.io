@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Menu Items</h2>
+
+<p><a href="../menu_items/insert.html" class="btn btn-success">+ Add</a></p>
+
+<table>
+    <tr>
+        <th>item_id</th>
+        <th>item_name</th>
+        <th>description</th>
+        <th>price</th>
+        <th>category_name</th>
+        <th>is_available</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+        <tr>
+        <td>1</td>
+        <td>Iced Tea</td>
+        <td>Sweet iced tea</td>
+        <td>2.50</td>
+        <td>Beverages</td>
+        <td>1</td>
+        <td><a href="../menu_items/edit__id_1.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../menu_items/delete__id_1.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>2</td>
+        <td>Garlic Bread</td>
+        <td>Toasted bread with garlic butter</td>
+        <td>4.00</td>
+        <td>Appetizers</td>
+        <td>1</td>
+        <td><a href="../menu_items/edit__id_2.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../menu_items/delete__id_2.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>3</td>
+        <td>Cheeseburger</td>
+        <td>Beef patty with cheese</td>
+        <td>10.99</td>
+        <td>Entrees</td>
+        <td>1</td>
+        <td><a href="../menu_items/edit__id_3.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../menu_items/delete__id_3.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>4</td>
+        <td>Chocolate Cake</td>
+        <td>Rich chocolate fudge cake</td>
+        <td>6.50</td>
+        <td>Desserts</td>
+        <td>1</td>
+        <td><a href="../menu_items/edit__id_4.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../menu_items/delete__id_4.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>5</td>
+        <td>Caesar Salad</td>
+        <td>Romaine lettuce with Caesar dressing</td>
+        <td>7.25</td>
+        <td>Salads</td>
+        <td>1</td>
+        <td><a href="../menu_items/edit__id_5.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../menu_items/delete__id_5.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+    </table>
+
+<div class="sql-box"><h3>SQL used</h3><pre>SELECT mi.item_id, mi.item_name, mi.description, mi.price,
+               c.category_name, mi.is_available
+        FROM menu_items mi
+        LEFT JOIN categories c ON mi.category_cd = c.category_cd
+        ORDER BY mi.item_id</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>

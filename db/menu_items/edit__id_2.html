@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Edit Menu Item</h2>
+
+
+<div class="form-box">
+    <form method="POST">
+        <label>item_id</label>
+        <input type="number" name="item_id" value="2" readonly>
+
+        <label>item_name</label>
+        <input type="text" name="item_name" value="Garlic Bread" required>
+
+        <label>description</label>
+        <input type="text" name="description" value="Toasted bread with garlic butter" required>
+
+        <label>price</label>
+        <input type="number" name="price" step="0.01" value="4.00" required>
+
+        <label>category_cd</label>
+        <select name="category_cd" required>
+            <option value="">-- Select --</option>
+                        <option value="APP  " selected>Appetizers</option>
+                        <option value="BEV  " >Beverages</option>
+                        <option value="DES  " >Desserts</option>
+                        <option value="ENT  " >Entrees</option>
+                        <option value="SAL  " >Salads</option>
+                    </select>
+
+        <label>is_available</label>
+        <select name="is_available" required>
+            <option value="">-- Select --</option>
+            <option value="1" selected>Yes</option>
+            <option value="0" >No</option>
+        </select>
+
+        <br><br>
+        <button type="submit" class="btn btn-warning">Save</button>
+        <a href="../menu_items/list.html" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<div class="sql-box"><h3>SQL used</h3><pre>UPDATE menu_items SET item_name=?, description=?, price=?, category_cd=?, is_available=? WHERE item_id=?</pre><pre>SELECT item_id, item_name, description, price, category_cd, is_available FROM menu_items WHERE item_id=?</pre><pre>SELECT category_cd, category_name FROM categories ORDER BY category_name</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>

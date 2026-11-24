@@ -1,0 +1,51 @@
+<?php
+$base = "..";
+require "../db.php";
+
+$sqlUpdate = "UPDATE categories SET category_name=? WHERE category_cd=?";
+$sqlSelect = "SELECT category_cd, category_name FROM categories WHERE category_cd=?";
+$error = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        db_query($sqlUpdate, [
+            $_POST['category_name'],
+            $_POST['category_cd']
+        ]);
+        header("Location: list.php");
+        exit;
+    } catch (PDOException $e) {
+        $error = "Update failed: " . $e->getMessage();
+    }
+}
+
+$id = $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST['category_cd'] : (isset($_GET['id']) ? $_GET['id'] : '');
+$stmt = db_query($sqlSelect, [$id]);
+$row = db_fetch($stmt);
+if (!$row) { header("Location: list.php"); exit; }
+$vals = $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $row;
+
+require "../header.php";
+?>
+
+<h2>Edit Category</h2>
+
+<?php if ($error): ?><div class="msg-error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+
+<div class="form-box">
+    <form method="POST">
+        <label>category_cd</label>
+        <input type="text" name="category_cd" value="<?= htmlspecialchars($row['category_cd']) ?>" readonly>
+
+        <label>category_name</label>
+        <input type="text" name="category_name" value="<?= htmlspecialchars($vals['category_name']) ?>" required>
+
+        <br><br>
+        <button type="submit" class="btn btn-warning">Save</button>
+        <a href="list.php" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<?php sql_box($sqlUpdate, $sqlSelect); ?>
+
+<?php require "../footer.php"; ?>

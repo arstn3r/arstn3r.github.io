@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Delete Category</h2>
+
+
+<p>Are you sure you want to delete this record?</p>
+
+<table>
+    <tr><th>category_cd</th><td>SAL  </td></tr>
+    <tr><th>category_name</th><td>Salads</td></tr>
+</table>
+
+<form method="POST">
+    <input type="hidden" name="category_cd" value="SAL  ">
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="../categories/list.html" class="btn btn-secondary">Cancel</a>
+</form>
+
+<div class="sql-box"><h3>SQL used</h3><pre>DELETE FROM categories WHERE category_cd=?</pre><pre>SELECT category_cd, category_name FROM categories WHERE category_cd=?</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Add an Order Item</h2>
+
+
+<div class="form-box">
+    <form method="POST">
+        <label>order_item_id</label>
+        <input type="number" name="order_item_id" required>
+
+        <label>order_id</label>
+        <select name="order_id" required>
+            <option value="">-- Select --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+
+        <label>item_id</label>
+        <select name="item_id" required>
+            <option value="">-- Select --</option>
+                        <option value="5">Caesar Salad</option>
+                        <option value="3">Cheeseburger</option>
+                        <option value="4">Chocolate Cake</option>
+                        <option value="2">Garlic Bread</option>
+                        <option value="1">Iced Tea</option>
+                    </select>
+
+        <label>quantity</label>
+        <input type="number" name="quantity" required>
+
+        <label>unit_price</label>
+        <input type="number" name="unit_price" step="0.01" required>
+
+        <br><br>
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="../order_items/list.html" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<div class="sql-box"><h3>SQL used</h3><pre>INSERT INTO order_items (order_item_id, order_id, item_id, quantity, unit_price)
+        VALUES (?, ?, ?, ?, ?)</pre><pre>SELECT order_id FROM orders ORDER BY order_id</pre><pre>SELECT item_id, item_name FROM menu_items ORDER BY item_name</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>

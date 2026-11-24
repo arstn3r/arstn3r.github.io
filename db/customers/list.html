@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Customers</h2>
+
+<p><a href="../customers/insert.html" class="btn btn-success">+ Add</a></p>
+
+<table>
+    <tr>
+        <th>customer_id</th>
+        <th>customer_name</th>
+        <th>email</th>
+        <th>password_hash</th>
+        <th>phone</th>
+        <th>is_active</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+        <tr>
+        <td>1</td>
+        <td>John Doe</td>
+        <td>john@example.com</td>
+        <td>pwd1</td>
+        <td>555-0101</td>
+        <td>1</td>
+        <td><a href="../customers/edit__id_1.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../customers/delete__id_1.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>2</td>
+        <td>Jane Smith</td>
+        <td>jane@example.com</td>
+        <td>pwd2</td>
+        <td>555-0102</td>
+        <td>1</td>
+        <td><a href="../customers/edit__id_2.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../customers/delete__id_2.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>3</td>
+        <td>Bob Johnson</td>
+        <td>bob@example.com</td>
+        <td>pwd3</td>
+        <td>555-0103</td>
+        <td>0</td>
+        <td><a href="../customers/edit__id_3.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../customers/delete__id_3.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>4</td>
+        <td>Alice Brown</td>
+        <td>alice@example.com</td>
+        <td>pwd4</td>
+        <td>555-0104</td>
+        <td>1</td>
+        <td><a href="../customers/edit__id_4.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../customers/delete__id_4.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+        <tr>
+        <td>5</td>
+        <td>Charlie Davis</td>
+        <td>charlie@example.com</td>
+        <td>pwd5</td>
+        <td>555-0105</td>
+        <td>1</td>
+        <td><a href="../customers/edit__id_5.html" class="btn btn-warning">Edit</a></td>
+        <td><a href="../customers/delete__id_5.html" class="btn btn-danger">Delete</a></td>
+    </tr>
+    </table>
+
+<div class="sql-box"><h3>SQL used</h3><pre>SELECT customer_id, customer_name, email, password_hash, phone, is_active
+        FROM customers
+        ORDER BY customer_id</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>

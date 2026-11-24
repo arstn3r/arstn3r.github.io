@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Edit Order</h2>
+
+
+<div class="form-box">
+    <form method="POST">
+        <label>order_id</label>
+        <input type="number" name="order_id" value="2" readonly>
+
+        <label>customer_id</label>
+        <select name="customer_id" required>
+            <option value="">-- Select --</option>
+                        <option value="4" >Alice Brown</option>
+                        <option value="3" >Bob Johnson</option>
+                        <option value="5" >Charlie Davis</option>
+                        <option value="2" selected>Jane Smith</option>
+                        <option value="1" >John Doe</option>
+                    </select>
+
+        <label>order_date</label>
+        <input type="date" name="order_date" value="2026-06-02" required>
+
+        <label>total_price</label>
+        <input type="number" name="total_price" step="0.01" value="10.50" required>
+
+        <label>status_cd</label>
+        <select name="status_cd" required>
+            <option value="">-- Select --</option>
+                        <option value="CANC " >Cancelled</option>
+                        <option value="DELV " >Delivered</option>
+                        <option value="PEND " selected>Pending</option>
+                        <option value="PREP " >Preparing</option>
+                        <option value="READY" >Ready</option>
+                    </select>
+
+        <br><br>
+        <button type="submit" class="btn btn-warning">Save</button>
+        <a href="../orders/list.html" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<div class="sql-box"><h3>SQL used</h3><pre>UPDATE orders SET customer_id=?, order_date=?, total_price=?, status_cd=? WHERE order_id=?</pre><pre>SELECT order_id, customer_id, order_date, total_price, status_cd FROM orders WHERE order_id=?</pre><pre>SELECT customer_id, customer_name FROM customers ORDER BY customer_name</pre><pre>SELECT status_cd, status_name FROM order_statuses ORDER BY status_name</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Team site</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+    <h1><a href="../index.html">Team site</a></h1>
+    <nav>
+        <a href="../index.html">Home</a>
+                                    <a href="../admins/list.html">admins</a>
+                                                <a href="../categories/list.html">categories</a>
+                                                <a href="../customers/list.html">customers</a>
+                                                <a href="../menu_items/list.html">menu_items</a>
+                                                <a href="../order_items/list.html">order_items</a>
+                                                <a href="../order_statuses/list.html">order_statuses</a>
+                                                <a href="../orders/list.html">orders</a>
+                                                <a href="../reviews/list.html">reviews</a>
+                                                            <span class="nav-right">Database: Team3</span>
+            </nav>
+</header>
+
+<main>
+
+<h2>Edit Customer</h2>
+
+
+<div class="form-box">
+    <form method="POST">
+        <label>customer_id</label>
+        <input type="number" name="customer_id" value="4" readonly>
+
+        <label>customer_name</label>
+        <input type="text" name="customer_name" value="Alice Brown" required>
+
+        <label>email</label>
+        <input type="text" name="email" value="alice@example.com" required>
+
+        <label>password_hash</label>
+        <input type="text" name="password_hash" value="pwd4" required>
+
+        <label>phone</label>
+        <input type="text" name="phone" value="555-0104" required>
+
+        <label>is_active</label>
+        <select name="is_active" required>
+            <option value="">-- Select --</option>
+            <option value="1" selected>Yes</option>
+            <option value="0" >No</option>
+        </select>
+
+        <br><br>
+        <button type="submit" class="btn btn-warning">Save</button>
+        <a href="../customers/list.html" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<div class="sql-box"><h3>SQL used</h3><pre>UPDATE customers SET customer_name=?, email=?, password_hash=?, phone=?, is_active=? WHERE customer_id=?</pre><pre>SELECT customer_id, customer_name, email, password_hash, phone, is_active FROM customers WHERE customer_id=?</pre></div>
+</main>
+
+<footer>
+    Team site &mdash; Database Course Project
+</footer>
+
+</body>
+</html>
